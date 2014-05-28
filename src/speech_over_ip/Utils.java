@@ -184,8 +184,10 @@ public class Utils {
     }
 
     public static String arrayToString(int[] arr) {
+        System.out.println(arr.length);
         String s = "[";
         for (int x = 0; x < arr.length; x++) {
+            //System.out.println(x);
             s += arr[x];
             if (x != arr.length - 1) {
                 s += ", ";

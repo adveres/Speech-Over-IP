@@ -11,15 +11,20 @@ public class Example {
 
     public static void main(String[] args) {
         
-        String fileName = "OUT.txt";
+        String fileName = Utils.FILENAME_SOUND_RAW;
+        
+        byte[] audio = FileSaver.fileToBytes(fileName);
+        AudioBytePlayer player = new AudioBytePlayer();
+        player.Play(audio);
+        System.exit(0);
 
         // Play that sound!
-        AudioBytePlayer bytePlayer = new AudioBytePlayer(FileSaver.fileToBytes(fileName));
-        bytePlayer.start();
-        try {
-            bytePlayer.thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        AudioBytePlayer bytePlayer = new AudioBytePlayer(FileSaver.fileToBytes(fileName));
+//        bytePlayer.start();
+//        try {
+//            bytePlayer.thread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

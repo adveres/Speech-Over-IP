@@ -17,6 +17,10 @@ public class AudioBytePlayer implements Runnable {
     Thread thread;
     byte[] audioBytes;
 
+    public AudioBytePlayer() {
+        this.audioBytes = null;
+    }
+
     public AudioBytePlayer(byte[] audioData) {
         this.audioBytes = audioData;
     }
@@ -74,7 +78,7 @@ public class AudioBytePlayer implements Runnable {
                 offset = x * Utils.CHUNK_OF_10MS;
                 line.write(audioBytes, offset, Utils.CHUNK_OF_10MS);
 
-                if(!OSUtils.isWindows()){
+                if (!OSUtils.isWindows()) {
                     if (x % 80 == 0) {
                         // Had a problem on OSX writing out 10ms chunks, or the
                         // whole array, where it would truncate the sound.
@@ -96,5 +100,16 @@ public class AudioBytePlayer implements Runnable {
         line.close();
         line = null;
         shutdown(null);
+    }
+
+    public void Play(byte[] audioData) {
+        this.audioBytes = audioData;
+        this.start();
+        try {
+            this.thread.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

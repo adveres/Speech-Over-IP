@@ -6,6 +6,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * 
+ * @author Adam Veres <adveres>
+ * 
+ */
 public class Sender {
     private Socket senderSocket = null;
     OutputStream out = null;
@@ -20,6 +25,15 @@ public class Sender {
         } catch (IOException e) {
             System.err.println("Couldn't get I/O connection to: " + host);
             throw e;
+        }
+    }
+
+    public void close() {
+        try {
+            out.close();
+            senderSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -49,11 +63,14 @@ public class Sender {
             throw new IndexOutOfBoundsException("Out of bounds: " + start);
         }
 
+        System.out.println("Writing out len..." + myByteArray.length + "  " + start + "  " + len);
         DataOutputStream dos = new DataOutputStream(out);
+        senderSocket.setReceiveBufferSize(len);
 
         dos.writeInt(len);
         if (len > 0) {
             dos.write(myByteArray, start, len);
+            dos.flush();
         }
     }
 }
