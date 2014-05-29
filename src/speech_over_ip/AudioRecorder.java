@@ -60,7 +60,7 @@ class AudioRecorder implements Runnable {
 
         // Record!
         ByteArrayOutputStream first_100ms_bytes = new ByteArrayOutputStream();
-        byte[] data = new byte[Utils.CHUNK_OF_10MS];
+        byte[] data = new byte[Constants.CHUNK_OF_10MS];
 
         int numBytesRead = 0;
         int totalBytesRead = 0;
@@ -69,7 +69,7 @@ class AudioRecorder implements Runnable {
         line.start();
         while (running) {
             // System.out.println("listening");
-            if ((numBytesRead = line.read(data, 0, Utils.CHUNK_OF_10MS)) == -1) {
+            if ((numBytesRead = line.read(data, 0, Constants.CHUNK_OF_10MS)) == -1) {
                 break;
             }
             totalBytesRead += numBytesRead;
@@ -83,7 +83,7 @@ class AudioRecorder implements Runnable {
             }
 
             // Selectively write the first 100ms to this different buffer
-            if (first_100ms_bytes.size() < Utils.CHUNK_OF_100_MS) {
+            if (first_100ms_bytes.size() < Constants.CHUNK_OF_100MS) {
                 first_100ms_bytes.write(data, 0, numBytesRead);
             } else {
                 if (!first100Analyzed) {

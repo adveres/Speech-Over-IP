@@ -13,7 +13,7 @@ public class Benchmark {
     Data measurements;
 
     public Benchmark() {
-        fileName = Utils.FILENAME_SOUND_RAW;
+        fileName = Constants.FILENAME_SOUND_RAW;
         rawSoundBytes = FileSaver.fileToBytes(fileName);
         measurements = Utils.analyzeFirst100ms(rawSoundBytes);
     }
@@ -22,7 +22,8 @@ public class Benchmark {
      * Run the algorithm 10K times to make the JVM work, then do another 10K
      * times and take the average.
      * 
-     * https://stackoverflow.com/questions/3382954/measure-execution-time-for-a-java-method
+     * https://stackoverflow.com/questions/3382954/measure-execution-time-for-a-
+     * java-method
      */
     public void measureAverageRunTime() {
         long start = 0;
@@ -41,15 +42,15 @@ public class Benchmark {
      * Pull in both sound.raw/speech.raw and compare file sizes.
      */
     public void measureFileSizes() {
-        byte[] rawSoundBytes = FileSaver.fileToBytes(Utils.FILENAME_SOUND_RAW);
-        byte[] rawSpeechBytes = FileSaver.fileToBytes(Utils.FILENAME_SPEECH_RAW);
+        byte[] rawSoundBytes = FileSaver.fileToBytes(Constants.FILENAME_SOUND_RAW);
+        byte[] rawSpeechBytes = FileSaver.fileToBytes(Constants.FILENAME_SPEECH_RAW);
 
         System.out.print("Raw sound file is [" + rawSoundBytes.length + " bytes].  ");
         System.out.println("Speech file is [" + rawSpeechBytes.length + " bytes].");
 
         double reduction = 100 - (100 * ((double) rawSpeechBytes.length / (double) rawSoundBytes.length));
-        System.out.printf("Speech file is %.2f%s smaller than the original raw sound.\n", reduction,
-                "%");
+        System.out.printf("Speech file is %.2f%s smaller than the original raw sound.\n",
+                reduction, "%");
     }
 
     /**

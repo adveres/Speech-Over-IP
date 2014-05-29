@@ -15,23 +15,9 @@ import javax.sound.sampled.AudioInputStream;
  */
 
 public class Utils {
-
-    public static final String FILENAME_SOUND_DATA = "sound.data";
-    public static final String FILENAME_SOUND_RAW = "sound.raw";
-    public static final String FILENAME_SPEECH_RAW = "speech.raw";
-    public static final String FILENAME_ENERGY_DATA = "energy.data";
-    public static final String FILENAME_ZERO_DATA = "zero.data";
-
     public static final float RATE = 8000.0f; // Given by proj1 definition
     public static final int SAMPLE_SIZE = 8; // Given by proj1 definition
     public static final int CHANNELS = 1; // Mono, given by proj1 definition
-
-    public static final int CHUNK_OF_100_MS = (int) (100 * (Utils.getFormat().getFrameRate() / 1000));
-    public static final int CHUNK_OF_10MS = CHUNK_OF_100_MS / 10;
-    public static final int CHUNK_OF_200MS = 20 * CHUNK_OF_10MS;
-    public static final int CHUNK_OF_250MS = 25 * CHUNK_OF_10MS;
-
-    public static final int REQUIRED_ZERO_CROSSINGS = 3;
 
     /**
      * Returns an audio format.
@@ -213,8 +199,8 @@ public class Utils {
      * @return
      */
     public static Data analyzeFirst100ms(byte[] rawSoundBytes) {
-        byte[] first_800_bytes = new byte[Utils.CHUNK_OF_100_MS];
-        for (int x = 0; x < Utils.CHUNK_OF_100_MS; x++) {
+        byte[] first_800_bytes = new byte[Constants.CHUNK_OF_100MS];
+        for (int x = 0; x < Constants.CHUNK_OF_100MS; x++) {
             first_800_bytes[x] = rawSoundBytes[x];
         }
 

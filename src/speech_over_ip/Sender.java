@@ -65,12 +65,12 @@ public class Sender {
 
         System.out.println("Writing out len..." + myByteArray.length + "  " + start + "  " + len);
         DataOutputStream dos = new DataOutputStream(out);
-        senderSocket.setReceiveBufferSize(len);
 
         dos.writeInt(len);
         if (len > 0) {
-            dos.write(myByteArray, start, len);
-            dos.flush();
+            dos.write(myByteArray);
+//            dos.write(myByteArray, start, len);
+//            dos.flush();
         }
     }
 }

@@ -51,11 +51,11 @@ public class ShutdownThread implements Runnable {
 
         byte[] audioBytes = baos.toByteArray();
         int[] intArray = Utils.byte_array_to_ints(audioBytes);
-        int[] zeroCrossings = Utils.calculateZeroCrossingsInChunks(intArray, Utils.CHUNK_OF_10MS);
+        int[] zeroCrossings = Utils.calculateZeroCrossingsInChunks(intArray, Constants.CHUNK_OF_10MS);
 
         // Process the first 100ms for statistical data
-        byte[] first_800_bytes = new byte[Utils.CHUNK_OF_100_MS];
-        for (int x = 0; x < Utils.CHUNK_OF_100_MS; x++) {
+        byte[] first_800_bytes = new byte[Constants.CHUNK_OF_100MS];
+        for (int x = 0; x < Constants.CHUNK_OF_100MS; x++) {
             first_800_bytes[x] = audioBytes[x];
         }
         Data d = Algorithms.processFirst100ms(first_800_bytes);
@@ -67,25 +67,25 @@ public class ShutdownThread implements Runnable {
         System.out.println("len speechOnly: " + speechOnly.length);
         System.out.println("recorder.audioBytes: " + audioBytes);
         System.out.println("recorder.audioBytes.length: " + audioBytes.length);
-        System.out.println("filename: " + Utils.FILENAME_SOUND_RAW);
+        System.out.println("filename: " + Constants.FILENAME_SOUND_RAW);
         System.out.println(audioBytes);
 
         // Write out allllll of the files.
 
         // Raw sound bytes
-        FileSaver.bytesToFile(Utils.FILENAME_SOUND_RAW, audioBytes);
+        FileSaver.bytesToFile(Constants.FILENAME_SOUND_RAW, audioBytes);
 
         // Bytes as integer data
-        FileSaver.byteFile_to_dataFile(Utils.FILENAME_SOUND_RAW, Utils.FILENAME_SOUND_DATA);
+        FileSaver.byteFile_to_dataFile(Constants.FILENAME_SOUND_RAW, Constants.FILENAME_SOUND_DATA);
 
         // Energy data per 10ms chunk
-        FileSaver.intsToFile(Utils.FILENAME_ENERGY_DATA,
-                Utils.energyOfArray(intArray, Utils.CHUNK_OF_10MS));
+        FileSaver.intsToFile(Constants.FILENAME_ENERGY_DATA,
+                Utils.energyOfArray(intArray, Constants.CHUNK_OF_10MS));
 
         // Raw speech minus silence
-        FileSaver.bytesToFile(Utils.FILENAME_SPEECH_RAW, speechOnly);
+        FileSaver.bytesToFile(Constants.FILENAME_SPEECH_RAW, speechOnly);
 
         // Zero crossings per 10ms chunk
-        FileSaver.intsToFile(Utils.FILENAME_ZERO_DATA, zeroCrossings);
+        FileSaver.intsToFile(Constants.FILENAME_ZERO_DATA, zeroCrossings);
     }
 }

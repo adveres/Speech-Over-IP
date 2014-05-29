@@ -11,7 +11,7 @@ public class Example {
 
     public static void main(String[] args) {
         
-        String fileName = Utils.FILENAME_SOUND_RAW;
+        String fileName = Constants.FILENAME_SOUND_RAW;
         
         byte[] audio = FileSaver.fileToBytes(fileName);
         AudioBytePlayer player = new AudioBytePlayer();

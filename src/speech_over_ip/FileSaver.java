@@ -41,7 +41,7 @@ public class FileSaver {
             return;
         }
 
-        File file = new File(Utils.FILENAME_SOUND_RAW);
+        File file = new File(Constants.FILENAME_SOUND_RAW);
         try {
             if (AudioSystem.write(audioInputStream, fileType, file) == -1) {
                 throw new IOException("Problems writing to file");
@@ -66,7 +66,7 @@ public class FileSaver {
             System.out.println(numBytes);
             buffer = new byte[numBytes];
             ais.read(buffer, 0, numBytes);
-            fileOut = new BufferedWriter(new FileWriter(new File(Utils.FILENAME_SOUND_DATA)));
+            fileOut = new BufferedWriter(new FileWriter(new File(Constants.FILENAME_SOUND_DATA)));
 
             for (int x = 0; x < buffer.length; x++) {
                 int current = buffer[x];

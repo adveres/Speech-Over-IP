@@ -19,7 +19,7 @@ public class VUServer {
 
     public void runVOIP() {
         try {
-            DatagramSocket serverSocket = new DatagramSocket(9876);
+            DatagramSocket serverSocket = new DatagramSocket(6222);
             byte[] receiveData = new byte[10000];
 
             while (true) {

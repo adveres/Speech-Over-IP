@@ -15,14 +15,14 @@ public class Algorithms {
 
         int[] intSoundArray = Utils.byte_array_to_ints(Utils.getFormat(), byteData);
         int[] zeroCrossings = Utils.calculateZeroCrossingsInChunks(intSoundArray,
-                Utils.CHUNK_OF_10MS);
+                Constants.CHUNK_OF_10MS);
 
         double meanZeroCrossing = MathHelper.mean(zeroCrossings); // IZC
         double stdDevZeroCrossingRate = MathHelper.stdDeviation(zeroCrossings);
         double meanZerosPlustwoTimesStdDev = (meanZeroCrossing + (2 * stdDevZeroCrossingRate));
 
 
-        int[] energyArray = Utils.energyOfArray(intSoundArray, Utils.CHUNK_OF_10MS);
+        int[] energyArray = Utils.energyOfArray(intSoundArray, Constants.CHUNK_OF_10MS);
         double averageEnergy = MathHelper.mean(energyArray);
 
         double IF = 25.0; // Given by algorithm
@@ -64,7 +64,7 @@ public class Algorithms {
      */
     public static byte[] removeSilence(byte[] rawSound, Data thresholds) {
         int[] rawSoundArray = Utils.byte_array_to_ints(Utils.getFormat(), rawSound);
-        int[] energyArray = Utils.energyOfArray(rawSoundArray, Utils.CHUNK_OF_10MS);
+        int[] energyArray = Utils.energyOfArray(rawSoundArray, Constants.CHUNK_OF_10MS);
         ArrayList<Pair> endpointPairs = new ArrayList<Pair>();
 
         boolean done = false;
@@ -202,7 +202,7 @@ public class Algorithms {
         ArrayList<Byte> speech = new ArrayList<Byte>();
 
         for (Pair p : endpointPairs) {
-            for (int x = p.getN1() * Utils.CHUNK_OF_10MS; x < p.getN2() * Utils.CHUNK_OF_10MS; x++) {
+            for (int x = p.getN1() * Constants.CHUNK_OF_10MS; x < p.getN2() * Constants.CHUNK_OF_10MS; x++) {
                 speech.add(new Byte(rawSound[x]));
             }
         }
@@ -212,15 +212,15 @@ public class Algorithms {
 
     public static int checkBeforeN1(int[] intSoundArray, int n1, Data thresholds) {
         int new_n1 = n1;
-        int startIndex = n1 * Utils.CHUNK_OF_10MS;
-        int endIndex = (n1 * Utils.CHUNK_OF_100_MS) - Utils.CHUNK_OF_250MS;
+        int startIndex = n1 * Constants.CHUNK_OF_10MS;
+        int endIndex = (n1 * Constants.CHUNK_OF_100MS) - Constants.CHUNK_OF_250MS;
         ArrayList<Integer> zeroCrossBeatsThreshold = new ArrayList<Integer>();
         if (endIndex < 0) {
             endIndex = 0;
         }
         for (int x = endIndex; x < startIndex; x++) {
-            int offset = x * (Utils.CHUNK_OF_10MS);
-            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Utils.CHUNK_OF_10MS));
+            int offset = x * (Constants.CHUNK_OF_10MS);
+            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Constants.CHUNK_OF_10MS));
 
             int zeroCt = Utils.calculateZeroCrossings(chunk);
             if (zeroCt > thresholds.IZCT) {
@@ -228,7 +228,7 @@ public class Algorithms {
                 zeroCrossBeatsThreshold.add(new Integer(zeroCt));
             }
         }
-        if (zeroCrossBeatsThreshold.size() >= Utils.REQUIRED_ZERO_CROSSINGS) {
+        if (zeroCrossBeatsThreshold.size() >= Constants.REQUIRED_ZERO_CROSSINGS) {
             new_n1 = zeroCrossBeatsThreshold.get(0);
             System.out.println("NEW N1 = " + new_n1);
         }
@@ -239,24 +239,24 @@ public class Algorithms {
     public static int checkAfterN2(int[] intSoundArray, int n2, Data thresholds) {
         int new_n2 = n2;
         int startIndex = n2;
-        int endIndex = n2 + (Utils.CHUNK_OF_250MS / Utils.CHUNK_OF_10MS);
+        int endIndex = n2 + (Constants.CHUNK_OF_250MS / Constants.CHUNK_OF_10MS);
         ArrayList<Integer> zeroCrossBeatsThreshold = new ArrayList<Integer>();
         if (endIndex >= intSoundArray.length) {
             endIndex = intSoundArray.length - 1;
         }
         for (int x = startIndex; x < endIndex; x++) {
-            int offset = x * (Utils.CHUNK_OF_10MS);
+            int offset = x * (Constants.CHUNK_OF_10MS);
             if (offset >= intSoundArray.length) {
                 break;
             }
-            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Utils.CHUNK_OF_10MS));
+            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Constants.CHUNK_OF_10MS));
 
             int zeroCt = Utils.calculateZeroCrossings(chunk);
             if (zeroCt > thresholds.IZCT) {
                 zeroCrossBeatsThreshold.add(new Integer(x));
             }
         }
-        if (zeroCrossBeatsThreshold.size() >= Utils.REQUIRED_ZERO_CROSSINGS) {
+        if (zeroCrossBeatsThreshold.size() >= Constants.REQUIRED_ZERO_CROSSINGS) {
             new_n2 = zeroCrossBeatsThreshold.get(zeroCrossBeatsThreshold.size() - 1);
         }
 

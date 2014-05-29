@@ -75,8 +75,8 @@ public class AudioBytePlayer implements Runnable {
         int x = 0;
         while (thread != null && bytesRead < audioBytes.length) {
             try {
-                offset = x * Utils.CHUNK_OF_10MS;
-                line.write(audioBytes, offset, Utils.CHUNK_OF_10MS);
+                offset = x * Constants.CHUNK_OF_10MS;
+                line.write(audioBytes, offset, Constants.CHUNK_OF_10MS);
 
                 if (!OSUtils.isWindows()) {
                     if (x % 80 == 0) {
@@ -87,7 +87,7 @@ public class AudioBytePlayer implements Runnable {
                     }
                 }
 
-                bytesRead += Utils.CHUNK_OF_10MS;
+                bytesRead += Constants.CHUNK_OF_10MS;
                 x++;
             } catch (Exception e) {
                 shutdown("Error during playback: " + e);

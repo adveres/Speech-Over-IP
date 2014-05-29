@@ -21,7 +21,7 @@ public class Receiver implements Runnable {
     InputStream in = null;
     DataInputStream dis = null;
     Thread thread = null;
-    
+
     AudioBytePlayer abPlayer = new AudioBytePlayer();
 
     boolean keepListening = true;
@@ -54,33 +54,42 @@ public class Receiver implements Runnable {
 
         try {
             is = socket.getInputStream();
-            dis = new DataInputStream(is);
+            // dis = new DataInputStream(is);
         } catch (IOException ex) {
             System.out.println("Can't get socket input stream.");
             System.exit(1);
         }
 
-        byte[] receivedData = null;
+        byte[] receivedData = new byte[28480];
         int count = 0;
 
         try {
-
-            while (keepListening || (bufferSize = dis.readInt()) > -1) {
-                bufferSize = dis.readInt();
-                System.out.println("Read integer: " + bufferSize);
-                if(bufferSize < 0){
-                    continue;
-                }
-                receivedData = new byte[bufferSize];
-
-                count = dis.read(receivedData);
-                abPlayer.Play(receivedData);
-                
-                
-                
-                int[] x = Utils.byte_array_to_ints(receivedData);
-                System.out.println("int arr len: " + x.length);
+            is.read(receivedData, 0, 28480);
+            // abPlayer.Play(receivedData);
+            System.out.println(receivedData);
+            AudioBytePlayer bytePlayer = new AudioBytePlayer(receivedData);
+            bytePlayer.start();
+            try {
+                bytePlayer.thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            // while (keepListening || (bufferSize = dis.readInt()) > -1) {
+            // bufferSize = dis.readInt();
+            // System.out.println("Read integer: " + bufferSize);
+            // if(bufferSize < 0){
+            // continue;
+            // }
+            // receivedData = new byte[bufferSize];
+            //
+            // count = dis.read(receivedData);
+            // abPlayer.Play(receivedData);
+            //
+            //
+            //
+            // int[] x = Utils.byte_array_to_ints(receivedData);
+            // System.out.println("int arr len: " + x.length);
+            // }
 
             is.close();
             socket.close();

@@ -8,9 +8,9 @@ package speech_over_ip;
  */
 public class Play {
     public static void main(String[] args) {
-        String fileName = Utils.FILENAME_SOUND_RAW;
+        String fileName = Constants.FILENAME_SOUND_RAW;
         if (args.length == 0) {
-            System.out.println("No argument given, defaulting to '" + Utils.FILENAME_SOUND_RAW
+            System.out.println("No argument given, defaulting to '" + Constants.FILENAME_SOUND_RAW
                     + "'");
         } else {
             fileName = args[0];
