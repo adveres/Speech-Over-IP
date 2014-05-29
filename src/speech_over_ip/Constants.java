@@ -17,4 +17,11 @@ public class Constants {
 
     public static final int REQUIRED_ZERO_CROSSINGS = 3;
 
+    public static final int MIN_LATENCY = 20;
+
+    public static final int[] LOSS_PERCENTAGES = { 0, 1, 5, 10, 20 };
+    public static final String[] LOSS_PERCENTAGES_STR = { "0", "1", "5", "10", "20" };
+    
+    public static final String TCP = "TCP";
+    public static final String UDP = "UDP";
 }

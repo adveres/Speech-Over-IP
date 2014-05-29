@@ -34,6 +34,17 @@ public class Utils {
     }
 
     /**
+     * Takes a latency in MS and returns the bytes to read in to get that
+     * millisecond amount.
+     * 
+     * @param latencyInMS
+     * @return bytes equaling latencyInMS milliseconds
+     */
+    public static int latencyToBytes(int latencyInMS) {
+        return (int) (latencyInMS * (Utils.getFormat().getFrameRate() / 1000));
+    }
+
+    /**
      * Convert an AudioInputStream to an array of integers for processing
      * 
      * @param ais an AudioInputStream of audio data
@@ -173,7 +184,7 @@ public class Utils {
         System.out.println(arr.length);
         String s = "[";
         for (int x = 0; x < arr.length; x++) {
-            //System.out.println(x);
+            // System.out.println(x);
             s += arr[x];
             if (x != arr.length - 1) {
                 s += ", ";

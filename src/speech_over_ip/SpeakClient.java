@@ -3,10 +3,15 @@ package speech_over_ip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.net.*;
 import javax.sound.sampled.*;
 
+/**
+ * A client that controls the sending of voice over the network
+ * 
+ * @author Adam Veres <adveres>
+ * 
+ */
 public class SpeakClient extends JFrame {
     private static final long serialVersionUID = 5170909818194973861L;
 
@@ -18,10 +23,12 @@ public class SpeakClient extends JFrame {
 
     private String HOST = "localhost";
     private int PORT = 0;
+    private int LATENCY = 0;
 
-    public SpeakClient(String host, int port) {
+    public SpeakClient(String host, int port, int latency) {
         HOST = host;
         PORT = port;
+        LATENCY = latency;
 
         final JButton start = new JButton("Start");
         final JButton stop = new JButton("Stop");
@@ -75,8 +82,7 @@ public class SpeakClient extends JFrame {
     }
 
     class AudioCapture extends Thread {
-
-        byte audioBuffer[] = new byte[Constants.CHUNK_OF_250MS];
+        byte audioBuffer[] = new byte[Utils.latencyToBytes(LATENCY)];
 
         public void run() {
             keepRecording = true;
@@ -90,7 +96,6 @@ public class SpeakClient extends JFrame {
                         DatagramPacket sendPacket = new DatagramPacket(audioBuffer,
                                 audioBuffer.length, IPAddress, PORT);
                         clientSocket.send(sendPacket);
-
                     }
                 }
             } catch (Exception e) {
