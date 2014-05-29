@@ -34,6 +34,7 @@ public class Main {
         int port = 6222;
 
         SpeakClient speak = new SpeakClient(host, port);
+        new VUServer().runVOIP();
     }
 
     private static String usage() {
