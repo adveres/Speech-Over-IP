@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.*;
 
 import javax.sound.sampled.*;
 
@@ -28,8 +27,11 @@ public class SpeakClient extends JFrame {
 
     private Configuration config;
 
+    Sender sender;
+
     public SpeakClient(Configuration config) {
         this.config = config;
+        this.sender = new Sender(config);
 
         final JButton start = new JButton("Start");
         final JButton stop = new JButton("Stop");
@@ -88,15 +90,9 @@ public class SpeakClient extends JFrame {
         public void run() {
             keepRecording = true;
             try {
-                DatagramSocket clientSocket = new DatagramSocket();
-                InetAddress IPAddress = InetAddress.getByName(config.getHost());
-
                 while (keepRecording) {
                     int count = targetDataLine.read(audioBuffer, 0, audioBuffer.length);
                     if (count > 0) {
-                        DatagramPacket sendPacket = new DatagramPacket(audioBuffer,
-                                audioBuffer.length, IPAddress, config.getPort());
-                        clientSocket.send(sendPacket);
                     }
                 }
             } catch (Exception e) {

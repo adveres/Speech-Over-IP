@@ -3,8 +3,13 @@ package speech_over_ip;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import data.Configuration;
 
 /**
  * 
@@ -12,65 +17,102 @@ import java.net.UnknownHostException;
  * 
  */
 public class Sender {
+
+    Configuration config = null;
+
+    // TCP
     private Socket senderSocket = null;
     OutputStream out = null;
+    DataOutputStream dos = null;
 
-    public Sender(String host, int port) throws IOException, UnknownHostException {
-        try {
-            senderSocket = new Socket(host, port);
-            out = senderSocket.getOutputStream();
-        } catch (UnknownHostException e) {
-            System.err.println("Unable to find host: " + host);
-            throw e;
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O connection to: " + host);
-            throw e;
+    // UDP
+    DatagramSocket clientSocket = null;
+    InetAddress ipAddress = null;
+
+    public Sender(Configuration config) {
+        this.config = config;
+
+        if (config.isPacketTypeTCP()) {
+            this.initTCP();
+        } else if (config.isPacketTypeUDP()) {
+            this.initUDP();
+        } else {
+            System.err.println("Invalid packet type given to Sender.");
         }
     }
 
-    public void close() {
+    private void initTCP() {
         try {
-            out.close();
-            senderSocket.close();
+            senderSocket = new Socket(config.getHost(), config.getPort());
+            out = senderSocket.getOutputStream();
+            dos = new DataOutputStream(out);
+        } catch (UnknownHostException e) {
+            System.err.println("Unable to find host: " + config.getHost());
         } catch (IOException e) {
+            System.err.println("Couldn't get I/O connection to: " + config.getHost());
+        }
+    }
+
+    private void initUDP() {
+        try {
+            clientSocket = new DatagramSocket();
+            ipAddress = InetAddress.getByName(config.getHost());
+        } catch (UnknownHostException e) {
+            System.err.println("Unable to find host: " + config.getHost());
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O connection to: " + config.getHost());
+        }
+    }
+
+    /**
+     * Send an array of bytes over a socket
+     * 
+     * @param audioBytes
+     */
+    public void sendBytes(byte[] audioBytes) {
+        if (this.config.isPacketTypeTCP()) {
+            this.writeToTCP(audioBytes);
+        } else if (this.config.isPacketTypeUDP()) {
+            this.writeToUDP(audioBytes);
+        } else {
+            System.err.println("Unsupported packet type: " + this.config.getPacketType()
+                    + ". Unable to send.");
+        }
+    }
+
+    /**
+     * Takes byte array and sends over TCP
+     * 
+     * @param audioBytes
+     */
+    public void writeToTCP(byte[] audioBytes) {
+        try {
+            // Write array length so receiver can init a buffer of the correct
+            // size.
+            dos.writeInt(audioBytes.length);
+            if (audioBytes.length > 0) {
+                // Send data
+                dos.write(audioBytes);
+            }
+        } catch (IOException e) {
+            System.out.println("There was an error writing to the socket");
             e.printStackTrace();
         }
     }
 
     /**
-     * Send an array of bytes over a socket
+     * Takes byte array and sends over UDP
      * 
-     * @param myByteArray
-     * @throws IOException
+     * @param audioBytes
      */
-    public void sendBytes(byte[] myByteArray) throws IOException {
-        sendBytes(myByteArray, 0, myByteArray.length);
-    }
+    private void writeToUDP(byte[] audioBytes) {
 
-    /**
-     * Send an array of bytes over a socket
-     * 
-     * @param myByteArray
-     * @param start
-     * @param len
-     * @throws IOException
-     */
-    public void sendBytes(byte[] myByteArray, int start, int len) throws IOException {
-        if (len < 0) {
-            throw new IllegalArgumentException("Negative length not allowed");
-        }
-        if (start < 0 || start >= myByteArray.length) {
-            throw new IndexOutOfBoundsException("Out of bounds: " + start);
-        }
-
-        System.out.println("Writing out len..." + myByteArray.length + "  " + start + "  " + len);
-        DataOutputStream dos = new DataOutputStream(out);
-
-        dos.writeInt(len);
-        if (len > 0) {
-            dos.write(myByteArray);
-//            dos.write(myByteArray, start, len);
-//            dos.flush();
+        DatagramPacket sendPacket = new DatagramPacket(audioBytes, audioBytes.length, ipAddress,
+                config.getPort());
+        try {
+            clientSocket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

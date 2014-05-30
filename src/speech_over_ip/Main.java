@@ -29,8 +29,8 @@ public class Main {
         parseArguments(args);
 
         // config.setHost("192.168.1.10");
-        // config.setHost("192.168.1.11");
-        config.setHost("localhost");
+         config.setHost("192.168.1.11");
+        //config.setHost("localhost");
         // config.setHost("127.0.0.1");
         config.setPort(6222);
 
