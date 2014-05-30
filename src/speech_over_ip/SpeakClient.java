@@ -93,6 +93,7 @@ public class SpeakClient extends JFrame {
                 while (keepRecording) {
                     int count = targetDataLine.read(audioBuffer, 0, audioBuffer.length);
                     if (count > 0) {
+                        sender.sendBytes(audioBuffer);
                     }
                 }
             } catch (Exception e) {

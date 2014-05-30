@@ -33,7 +33,6 @@ public class Receiver implements Runnable {
     public void run() {
         Socket socket = null;
         InputStream is = null;
-        int bufferSize = 0;
 
         try {
             socket = serverSocket.accept();
