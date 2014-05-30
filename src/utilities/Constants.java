@@ -1,4 +1,5 @@
-package speech_over_ip;
+package utilities;
+
 
 public class Constants {
     public static final String FILENAME_SOUND_DATA = "sound.data";

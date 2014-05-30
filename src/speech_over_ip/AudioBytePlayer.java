@@ -6,6 +6,10 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import utilities.Constants;
+import utilities.OSUtils;
+import utilities.Utils;
+
 /**
  * A class that runs as a thread to play sound.
  * 

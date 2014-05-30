@@ -3,16 +3,15 @@ package speech_over_ip;
 import java.net.*;
 import java.util.Random;
 
+import data.Configuration;
+import utilities.Utils;
+
 public class SpeakServer {
-    private int PORT = 0;
-    private int LATENCY = 0;
-    private int LOSS = 0;
+    private Configuration config;
     Random rand = new Random();
 
-    public SpeakServer(int port, int latency, int loss) {
-        PORT = port;
-        LATENCY = latency;
-        LOSS = loss;
+    public SpeakServer(Configuration config) {
+        this.config = config;
     }
 
     /**
@@ -20,8 +19,8 @@ public class SpeakServer {
      */
     public void listen() {
         try {
-            DatagramSocket serverSocket = new DatagramSocket(PORT);
-            byte[] receiveData = new byte[Utils.latencyToBytes(LATENCY)];
+            DatagramSocket serverSocket = new DatagramSocket(config.getPort());
+            byte[] receiveData = new byte[Utils.latencyToBytes(config.getLatencyInMS())];
 
             while (true) {
                 DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
@@ -33,7 +32,7 @@ public class SpeakServer {
                     continue;
                 }
 
-                //Otherwise play them as sound.
+                // Otherwise play them as sound.
                 try {
                     byte audioData[] = packet.getData();
 
@@ -60,7 +59,7 @@ public class SpeakServer {
         int rnd = rand.nextInt(100); // Generates from 0-99
         rnd += 1;// Want 1-100
 
-        if (rnd < this.LOSS) {
+        if (rnd < config.getLossPercent()) {
             return true;
         }
         return false;

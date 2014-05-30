@@ -1,7 +1,8 @@
 package speech_over_ip;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
+import data.Configuration;
+import utilities.Constants;
+import utilities.Utils;
 
 /**
  * Loss: 0%, 1%, 5%, 10%, 20%
@@ -17,29 +18,20 @@ import java.net.UnknownHostException;
  */
 public class Main {
 
-    private static String _host;
-    private static int _port;
-
-    private static int _loss;
-    private static int _latency;
-    private static String _packetType;
-    private static boolean _detectSpeech;
-
-    private static int _ITL = 200;
-    private static int _ITU = 400;
+    private static Configuration config = new Configuration();
 
     public static void main(String[] args) {
         parseArguments(args);
 
-        // host = "192.168.1.10";
-        _host = "192.168.1.11";
-        // host = "localhost";
-        // host = "127.0.0.1";
-        _port = 6222;
+        // config.setHost("192.168.1.10");
+        config.setHost("192.168.1.11");
+        // config.setHost("localhost");
+        // config.setHost("127.0.0.1");
+        config.setPort(6222);
 
-        if (0 == _packetType.compareTo(Constants.UDP)) {
-            SpeakClient speak = new SpeakClient(_host, _port, _latency);
-            new SpeakServer(_port, _latency, _loss).listen();
+        if (0 == config.getPacketType().compareTo(Constants.UDP)) {
+            new SpeakClient(config);
+            new SpeakServer(config).listen();
         } else {
             System.err.println("--------------------");
             System.err.println("     TCP IS TODO");
@@ -86,19 +78,21 @@ public class Main {
      * @param lossArg
      */
     private static void checkLossPct(int lossArg) {
-        _loss = -1;
+        int loss = -1;
         for (int i = 0; i < Constants.LOSS_PERCENTAGES.length; i++) {
             if (lossArg == Constants.LOSS_PERCENTAGES[i]) {
-                _loss = Constants.LOSS_PERCENTAGES[i];
+                loss = Constants.LOSS_PERCENTAGES[i];
                 break;
             }
         }
 
-        if (_loss == -1) {
+        if (loss == -1) {
             System.err.println("Acceptable loss percentages are: "
                     + Utils.arrayToString(Constants.LOSS_PERCENTAGES));
             printUsage();
             System.exit(1);
+        } else {
+            config.setLossPercent(loss);
         }
     }
 
@@ -113,7 +107,7 @@ public class Main {
             printUsage();
             System.exit(1);
         }
-        _latency = lat;
+        config.setLatencyInMS(lat);
     }
 
     /**
@@ -125,9 +119,9 @@ public class Main {
         String pack = pktType.toUpperCase();
 
         if (0 == pack.compareTo(Constants.UDP)) {
-            _packetType = Constants.UDP;
+            config.setPacketType(Constants.UDP);
         } else if (0 == pack.compareTo(Constants.TCP)) {
-            _packetType = Constants.TCP;
+            config.setPacketType(Constants.TCP);
         } else {
             System.err.println("Packet type must be one of [" + Constants.TCP + ", "
                     + Constants.UDP + "]");
@@ -145,9 +139,9 @@ public class Main {
         String det = detSpeech.toUpperCase();
 
         if (0 == det.compareTo("TRUE")) {
-            _detectSpeech = true;
+            config.setSpeechDetectionOn(true);
         } else if (0 == det.compareTo("FALSE")) {
-            _detectSpeech = false;
+            config.setSpeechDetectionOn(false);
         } else {
             System.err.println("Packet type must be 'true' or 'false'");
             printUsage();
@@ -155,19 +149,19 @@ public class Main {
         }
     }
 
-    private static void check_ITL(int itl) {
-        check_ITL_ITU(itl, _ITU);
+    private static void check_ITL(double itl) {
+        check_ITL_ITU(itl, config.getSpeechConfig().getITU());
     }
 
-    private static void check_ITL_ITU(int itl, int itu) {
+    private static void check_ITL_ITU(double itl, double itu) {
         if (itl < 0 || itu < 0) {
             System.err
                     .println("Neither ITL not ITU should be negative. Recommend values between 0-1000.");
             printUsage();
             System.exit(1);
         }
-        _ITL = itl;
-        _ITU = itu;
+        config.getSpeechConfig().setITL(itl);
+        config.getSpeechConfig().setITU(itu);
     }
 
 }

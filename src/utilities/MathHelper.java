@@ -1,4 +1,4 @@
-package speech_over_ip;
+package utilities;
 
 /**
  * Class with math related helper functions.

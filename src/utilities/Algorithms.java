@@ -1,7 +1,10 @@
-package speech_over_ip;
+package utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import data.Pair;
+import data.SpeechDetectionConfig;
 
 /**
  * A class that holds all of the algorithm pieces to detect speech
@@ -11,7 +14,7 @@ import java.util.Arrays;
  */
 public class Algorithms {
 
-    static Data processFirst100ms(byte[] byteData) {
+    public static SpeechDetectionConfig processFirst100ms(byte[] byteData) {
 
         int[] intSoundArray = Utils.byte_array_to_ints(Utils.getFormat(), byteData);
         int[] zeroCrossings = Utils.calculateZeroCrossingsInChunks(intSoundArray,
@@ -20,7 +23,6 @@ public class Algorithms {
         double meanZeroCrossing = MathHelper.mean(zeroCrossings); // IZC
         double stdDevZeroCrossingRate = MathHelper.stdDeviation(zeroCrossings);
         double meanZerosPlustwoTimesStdDev = (meanZeroCrossing + (2 * stdDevZeroCrossingRate));
-
 
         int[] energyArray = Utils.energyOfArray(intSoundArray, Constants.CHUNK_OF_10MS);
         double averageEnergy = MathHelper.mean(energyArray);
@@ -51,7 +53,7 @@ public class Algorithms {
         System.out.println("  ITU " + ITU);
         System.out.println("  IZCT " + IZCT);
 
-        return new Data(ITL, ITU, IZCT);
+        return new SpeechDetectionConfig(ITL, ITU, IZCT);
     }
 
     /**
@@ -62,7 +64,7 @@ public class Algorithms {
      * @param thresholds
      * @return
      */
-    public static byte[] removeSilence(byte[] rawSound, Data thresholds) {
+    public static byte[] removeSilence(byte[] rawSound, SpeechDetectionConfig thresholds) {
         int[] rawSoundArray = Utils.byte_array_to_ints(Utils.getFormat(), rawSound);
         int[] energyArray = Utils.energyOfArray(rawSoundArray, Constants.CHUNK_OF_10MS);
         ArrayList<Pair> endpointPairs = new ArrayList<Pair>();
@@ -91,8 +93,8 @@ public class Algorithms {
             endpointPairs.add(new Pair(n1, n2));
         }
 
-        //System.out.println("silenceRemoved " + endpointPairs);
-        //System.out.println("silenceRemoved.size " + endpointPairs.size());
+        // System.out.println("silenceRemoved " + endpointPairs);
+        // System.out.println("silenceRemoved.size " + endpointPairs.size());
         return removeSilentBytes(rawSound, endpointPairs, thresholds);
     }
 
@@ -104,7 +106,8 @@ public class Algorithms {
      * @param start
      * @return
      */
-    public static int getNextSpeechStartPoint(int[] energyArray, Data thresholds, int start) {
+    public static int getNextSpeechStartPoint(int[] energyArray, SpeechDetectionConfig thresholds,
+            int start) {
         if (start >= energyArray.length) {
             System.err.println("Cannot give a start point larger than the array.");
             return energyArray.length - 1;
@@ -117,23 +120,23 @@ public class Algorithms {
         int n1 = 0;
 
         while (outer) {
-            if (energyArray[m] > thresholds.ITL) {
+            if (energyArray[m] > thresholds.getITL()) {
                 i = m;
 
                 inner = true;
                 while (inner) {
-                    if (energyArray[i] < thresholds.ITL) {
+                    if (energyArray[i] < thresholds.getITL()) {
                         m = i + 1;
                         inner = false;
                         if (m >= (energyArray.length)) {
-                            //System.out.println("m has reached the end of the array");
+                            // System.out.println("m has reached the end of the array");
                             n1 = energyArray.length - 1;
                             return n1;
                         }
                         break;
                     } else {
                         // Packet was wrong here. ITU not ITL.
-                        if (energyArray[i] >= thresholds.ITU) {
+                        if (energyArray[i] >= thresholds.getITU()) {
                             n1 = i;
                             if (i == m) {
                                 n1 = n1 - 1;
@@ -145,7 +148,7 @@ public class Algorithms {
                         } else {
                             i++;
                             if (i >= (energyArray.length)) {
-                                //System.out.println("i has reached the end of the array");
+                                // System.out.println("i has reached the end of the array");
                                 n1 = energyArray.length - 1;
                                 return n1;
                             }
@@ -155,7 +158,7 @@ public class Algorithms {
             } else {
                 m++;
                 if (m >= (energyArray.length)) {
-                    //System.out.println("m has reached the end of the array");
+                    // System.out.println("m has reached the end of the array");
                     n1 = energyArray.length - 1;
                     return n1;
                 }
@@ -172,7 +175,8 @@ public class Algorithms {
      * @param start
      * @return
      */
-    public static int getNextSpeechEndPoint(int[] energyArray, Data thresholds, int start) {
+    public static int getNextSpeechEndPoint(int[] energyArray, SpeechDetectionConfig thresholds,
+            int start) {
         if (start >= energyArray.length) {
             System.err.println("Cannot give a start point larger than the array.");
             return energyArray.length - 1;
@@ -180,7 +184,7 @@ public class Algorithms {
         int n2 = 0;
 
         for (int x = start; x < energyArray.length; x++) {
-            if ((energyArray[x] < thresholds.ITU) || (x == (energyArray.length - 1))) {
+            if ((energyArray[x] < thresholds.getITU()) || (x == (energyArray.length - 1))) {
                 n2 = x;
                 return n2;
             }
@@ -198,11 +202,12 @@ public class Algorithms {
      * @return
      */
     public static byte[] removeSilentBytes(byte[] rawSound, ArrayList<Pair> endpointPairs,
-            Data thresholds) {
+            SpeechDetectionConfig thresholds) {
         ArrayList<Byte> speech = new ArrayList<Byte>();
 
         for (Pair p : endpointPairs) {
-            for (int x = p.getN1() * Constants.CHUNK_OF_10MS; x < p.getN2() * Constants.CHUNK_OF_10MS; x++) {
+            for (int x = p.getN1() * Constants.CHUNK_OF_10MS; x < p.getN2()
+                    * Constants.CHUNK_OF_10MS; x++) {
                 speech.add(new Byte(rawSound[x]));
             }
         }
@@ -210,7 +215,7 @@ public class Algorithms {
         return Utils.toByteArray(speech);
     }
 
-    public static int checkBeforeN1(int[] intSoundArray, int n1, Data thresholds) {
+    public static int checkBeforeN1(int[] intSoundArray, int n1, SpeechDetectionConfig thresholds) {
         int new_n1 = n1;
         int startIndex = n1 * Constants.CHUNK_OF_10MS;
         int endIndex = (n1 * Constants.CHUNK_OF_100MS) - Constants.CHUNK_OF_250MS;
@@ -220,10 +225,11 @@ public class Algorithms {
         }
         for (int x = endIndex; x < startIndex; x++) {
             int offset = x * (Constants.CHUNK_OF_10MS);
-            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Constants.CHUNK_OF_10MS));
+            int[] chunk = Arrays.copyOfRange(intSoundArray, offset,
+                    (offset + Constants.CHUNK_OF_10MS));
 
             int zeroCt = Utils.calculateZeroCrossings(chunk);
-            if (zeroCt > thresholds.IZCT) {
+            if (zeroCt > thresholds.getIZCT()) {
                 System.out.println("n1 zeroCrossBeatsThreshold " + zeroCrossBeatsThreshold);
                 zeroCrossBeatsThreshold.add(new Integer(zeroCt));
             }
@@ -236,7 +242,7 @@ public class Algorithms {
         return new_n1;
     }
 
-    public static int checkAfterN2(int[] intSoundArray, int n2, Data thresholds) {
+    public static int checkAfterN2(int[] intSoundArray, int n2, SpeechDetectionConfig thresholds) {
         int new_n2 = n2;
         int startIndex = n2;
         int endIndex = n2 + (Constants.CHUNK_OF_250MS / Constants.CHUNK_OF_10MS);
@@ -249,10 +255,11 @@ public class Algorithms {
             if (offset >= intSoundArray.length) {
                 break;
             }
-            int[] chunk = Arrays.copyOfRange(intSoundArray, offset, (offset + Constants.CHUNK_OF_10MS));
+            int[] chunk = Arrays.copyOfRange(intSoundArray, offset,
+                    (offset + Constants.CHUNK_OF_10MS));
 
             int zeroCt = Utils.calculateZeroCrossings(chunk);
-            if (zeroCt > thresholds.IZCT) {
+            if (zeroCt > thresholds.getIZCT()) {
                 zeroCrossBeatsThreshold.add(new Integer(x));
             }
         }

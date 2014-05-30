@@ -1,10 +1,15 @@
 package speech_over_ip;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+
 import javax.sound.sampled.*;
+
+import data.Configuration;
+import utilities.Utils;
 
 /**
  * A client that controls the sending of voice over the network
@@ -21,14 +26,10 @@ public class SpeakClient extends JFrame {
     AudioInputStream InputStream;
     SourceDataLine sourceLine;
 
-    private String HOST = "localhost";
-    private int PORT = 0;
-    private int LATENCY = 0;
+    private Configuration config;
 
-    public SpeakClient(String host, int port, int latency) {
-        HOST = host;
-        PORT = port;
-        LATENCY = latency;
+    public SpeakClient(Configuration config) {
+        this.config = config;
 
         final JButton start = new JButton("Start");
         final JButton stop = new JButton("Stop");
@@ -82,19 +83,19 @@ public class SpeakClient extends JFrame {
     }
 
     class AudioCapture extends Thread {
-        byte audioBuffer[] = new byte[Utils.latencyToBytes(LATENCY)];
+        byte audioBuffer[] = new byte[Utils.latencyToBytes(config.getLatencyInMS())];
 
         public void run() {
             keepRecording = true;
             try {
                 DatagramSocket clientSocket = new DatagramSocket();
-                InetAddress IPAddress = InetAddress.getByName(HOST);
+                InetAddress IPAddress = InetAddress.getByName(config.getHost());
 
                 while (keepRecording) {
                     int count = targetDataLine.read(audioBuffer, 0, audioBuffer.length);
                     if (count > 0) {
                         DatagramPacket sendPacket = new DatagramPacket(audioBuffer,
-                                audioBuffer.length, IPAddress, PORT);
+                                audioBuffer.length, IPAddress, config.getPort());
                         clientSocket.send(sendPacket);
                     }
                 }

@@ -1,5 +1,11 @@
 package speech_over_ip;
 
+import data.SpeechDetectionConfig;
+import utilities.Algorithms;
+import utilities.Constants;
+import utilities.FileSaver;
+import utilities.Utils;
+
 /**
  * This program reads in the sound.raw file and runs certain benchmarks on its
  * system footprint while it runs the algorithm to detect speech.
@@ -10,7 +16,7 @@ package speech_over_ip;
 public class Benchmark {
     String fileName;
     byte[] rawSoundBytes;
-    Data measurements;
+    SpeechDetectionConfig measurements;
 
     public Benchmark() {
         fileName = Constants.FILENAME_SOUND_RAW;

@@ -10,6 +10,11 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+import data.SpeechDetectionConfig;
+import utilities.Algorithms;
+import utilities.Constants;
+import utilities.Utils;
+
 /**
  * 
  * A class that runs as a thread to record sound.
@@ -23,7 +28,7 @@ class AudioRecorder implements Runnable {
 
     boolean running = false;
 
-    Data data = null;
+    SpeechDetectionConfig data = null;
     ByteArrayOutputStream baos = null;
     Sender sender = null;
 

@@ -1,4 +1,4 @@
-package speech_over_ip;
+package utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+
+import data.SpeechDetectionConfig;
 
 /**
  * Class with common methods for the package.
@@ -209,7 +211,7 @@ public class Utils {
      * @param rawSoundBytes
      * @return
      */
-    public static Data analyzeFirst100ms(byte[] rawSoundBytes) {
+    public static SpeechDetectionConfig analyzeFirst100ms(byte[] rawSoundBytes) {
         byte[] first_800_bytes = new byte[Constants.CHUNK_OF_100MS];
         for (int x = 0; x < Constants.CHUNK_OF_100MS; x++) {
             first_800_bytes[x] = rawSoundBytes[x];
