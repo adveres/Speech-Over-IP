@@ -21,11 +21,16 @@ public class Main {
     private static Configuration config = new Configuration();
 
     public static void main(String[] args) {
+        System.out.print("Args: [");
+        for (String s : args) {
+            System.out.print(s + " ");
+        }
+        System.out.println("]\n");
         parseArguments(args);
 
         // config.setHost("192.168.1.10");
-        config.setHost("192.168.1.11");
-        // config.setHost("localhost");
+        // config.setHost("192.168.1.11");
+        config.setHost("localhost");
         // config.setHost("127.0.0.1");
         config.setPort(6222);
 
@@ -36,12 +41,13 @@ public class Main {
             System.err.println("--------------------");
             System.err.println("     TCP IS TODO");
             System.err.println("--------------------");
+            System.exit(2);
         }
     }
 
     private static void printUsage() {
         String usage = "Usage: <loss %> <latency in ms> <tcp/udp> <detect speech true/false>";
-        usage += "[ITL ITU]\n";
+        usage += " [ITL ITU]\n";
         usage += "   ex:  Main 0 40 tcp true\n";
         usage += "   ex:  Main 20 1000 udp false\n";
         usage += "   ex:  Main 0 20 udp true 200 400\n";
@@ -143,7 +149,7 @@ public class Main {
         } else if (0 == det.compareTo("FALSE")) {
             config.setSpeechDetectionOn(false);
         } else {
-            System.err.println("Packet type must be 'true' or 'false'");
+            System.err.println("Speech Detection must be 'true' or 'false'");
             printUsage();
             System.exit(1);
         }
