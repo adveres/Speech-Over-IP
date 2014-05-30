@@ -21,7 +21,7 @@ public class Main {
     private static Configuration config = new Configuration();
 
     public static void main(String[] args) {
-        System.out.print("Args: [");
+        System.out.print("Speak args: [");
         for (String s : args) {
             System.out.print(s + " ");
         }
@@ -33,7 +33,6 @@ public class Main {
         config.setHost("localhost");
         // config.setHost("127.0.0.1");
         config.setPort(6222);
-        config.setPacketType(Constants.TCP);
 
         new SpeakServer(config).listen();
         new SpeakClient(config);

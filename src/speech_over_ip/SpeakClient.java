@@ -73,17 +73,21 @@ public class SpeakClient extends JFrame {
             targetDataLine.open(format);
             targetDataLine.start();
 
-            Thread captureThread = new Thread(new AudioCapture());
+            AudioCapture captureThread = new AudioCapture();
             captureThread.start();
         } catch (Exception e) {
-            StackTraceElement stackEle[] = e.getStackTrace();
-            for (StackTraceElement val : stackEle) {
-                System.out.println(val);
-            }
-            System.exit(0);
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
+    /**
+     * Thread that loops, reading in audio from mic and sending over the
+     * network.
+     * 
+     * @author Adam Veres <adveres>
+     * 
+     */
     class AudioCapture extends Thread {
         byte audioBuffer[] = new byte[Utils.latencyToBytes(config.getLatencyInMS())];
 
@@ -103,4 +107,4 @@ public class SpeakClient extends JFrame {
         }
     }
 
-}// Class End 
+}
