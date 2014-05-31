@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Random;
 
 import data.Configuration;
+import utilities.Constants;
 import utilities.Utils;
 
 public class Receiver extends Thread {
@@ -83,7 +84,8 @@ public class Receiver extends Thread {
             while (listening) {
                 bufferSize = dis.readInt();
                 System.out.println("Read integer: " + bufferSize);
-                if (bufferSize < 0) {
+                if (bufferSize < 0 || bufferSize > Utils.latencyToBytes(Constants.CHUNK_OF_1000MS)) {
+                    //Sometimes a junk integer gets read, and must be discarded.
                     continue;
                 }
                 receivedData = new byte[bufferSize];
