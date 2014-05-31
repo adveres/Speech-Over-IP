@@ -16,7 +16,7 @@ import utilities.Utils;
  * @author adveres
  * 
  */
-public class AudioBytePlayer implements Runnable {
+public class AudioBytePlayer extends Thread {
     SourceDataLine line;
     Thread thread;
     byte[] audioBytes;
@@ -29,27 +29,10 @@ public class AudioBytePlayer implements Runnable {
         this.audioBytes = audioData;
     }
 
-    public void start() {
-        thread = new Thread(this);
-        thread.start();
-    }
-
-    public void stop() {
-        thread = null;
-    }
-
-    public void shutdown(String message) {
-        if (message != null) {
-            System.err.println(message);
-        }
-
-        stop();
-    }
-
     public void run() {
 
         if (audioBytes == null) {
-            shutdown("No audio bytes to play");
+            System.err.println("No audio bytes to play");
             return;
         }
 
@@ -57,7 +40,7 @@ public class AudioBytePlayer implements Runnable {
 
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         if (!AudioSystem.isLineSupported(info)) {
-            shutdown("Line matching " + info + " not supported.");
+            System.err.println("Line matching " + info + " not supported.");
             return;
         }
 
@@ -67,43 +50,16 @@ public class AudioBytePlayer implements Runnable {
             line = (SourceDataLine) AudioSystem.getLine(info);
             line.open(format, audioBytes.length);
         } catch (LineUnavailableException ex) {
-            shutdown("Unable to open the line: " + ex);
+            System.err.println("Unable to open the line: " + ex);
             return;
         }
 
-        // start the source data line
         line.start();
-
-        int bytesRead = 0;
-        int offset = 0;
-        int x = 0;
-        while (thread != null && bytesRead < audioBytes.length) {
-            try {
-                offset = x * Constants.CHUNK_OF_10MS;
-                line.write(audioBytes, offset, Constants.CHUNK_OF_10MS);
-
-                if (!OSUtils.isWindows()) {
-                    if (x % 80 == 0) {
-                        // Had a problem on OSX writing out 10ms chunks, or the
-                        // whole array, where it would truncate the sound.
-                        // Draining the line periodically fixes it.
-                        line.drain();
-                    }
-                }
-
-                bytesRead += Constants.CHUNK_OF_10MS;
-                x++;
-            } catch (Exception e) {
-                shutdown("Error during playback: " + e);
-                break;
-            }
-        }
-
+        line.write(audioBytes, 0, audioBytes.length);
         line.drain();
         line.stop();
         line.close();
         line = null;
-        shutdown(null);
     }
 
     public void Play(byte[] audioData) {

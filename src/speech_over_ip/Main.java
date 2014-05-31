@@ -36,7 +36,6 @@ public class Main {
 
         new SpeakServer(config).listen();
         new SpeakClient(config);
-
     }
 
     private static void printUsage() {
@@ -97,13 +96,18 @@ public class Main {
     }
 
     /**
-     * Sanity on latency integer (in ms)
+     * Sanity on latency integer (in ms). 20-1000ms supported.
      * 
-     * @param lat
+     * @param lat input to check
      */
     private static void checkLatency(int lat) {
         if (lat < Constants.MIN_LATENCY) {
             System.err.println("Latency cannot be below " + Constants.MIN_LATENCY);
+            printUsage();
+            System.exit(1);
+        }
+        if (lat > Constants.CHUNK_OF_1000MS) {
+            System.err.println("Latency above 1000ms is unsupported.");
             printUsage();
             System.exit(1);
         }

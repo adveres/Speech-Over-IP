@@ -3,7 +3,8 @@ package data;
 import utilities.Constants;
 
 /**
- * Configuration options for the program
+ * Configuration options for the program. Contains really everything the
+ * client/server/algorithm needs to run based on input parameters.
  * 
  * @author Adam Veres <adveres>
  * 
@@ -18,10 +19,23 @@ public class Configuration {
 
     private SpeechDetectionConfig speechConfig = new SpeechDetectionConfig(200.0, 400.0, 0.0);
 
+    /**
+     * Default constructor is OK. Have defaults set above.
+     */
     public Configuration() {
 
     }
 
+    /**
+     * Alternatively callers may specify each and every option.
+     * 
+     * @param host String of the host
+     * @param port port number to talk over
+     * @param loss percentage
+     * @param latency in milliseconds
+     * @param speechDetectionOn whether or not to filter silence
+     * @param packetType UDP or TCP
+     */
     public Configuration(String host, int port, int loss, int latency, boolean speechDetectionOn,
             String packetType) {
         this.setHost(host);

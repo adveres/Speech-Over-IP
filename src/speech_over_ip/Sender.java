@@ -41,6 +41,9 @@ public class Sender {
         }
     }
 
+    /**
+     * Init TCP sockets and output streams
+     */
     private void initTCP() {
         try {
             senderSocket = new Socket(config.getHost(), config.getPort());
@@ -53,6 +56,9 @@ public class Sender {
         }
     }
 
+    /**
+     * Init UDP socket and ip addr object
+     */
     private void initUDP() {
         try {
             clientSocket = new DatagramSocket();
@@ -87,11 +93,10 @@ public class Sender {
      */
     public void writeToTCP(byte[] audioBytes) {
         try {
-            // Write array length so receiver can init a buffer of the correct
-            // size.
+            // Write array length so receiver can allocate a buffer of the
+            // correct size. Then send actual data.
             dos.writeInt(audioBytes.length);
             if (audioBytes.length > 0) {
-                // Send data
                 dos.write(audioBytes);
             }
         } catch (IOException e) {
@@ -106,7 +111,6 @@ public class Sender {
      * @param audioBytes
      */
     private void writeToUDP(byte[] audioBytes) {
-
         DatagramPacket sendPacket = new DatagramPacket(audioBytes, audioBytes.length, ipAddress,
                 config.getPort());
         try {

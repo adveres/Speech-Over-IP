@@ -1,10 +1,6 @@
-package speech_over_ip;
+package utilities;
 
 import data.SpeechDetectionConfig;
-import utilities.Algorithms;
-import utilities.Constants;
-import utilities.FileSaver;
-import utilities.Utils;
 
 /**
  * This program reads in the sound.raw file and runs certain benchmarks on its
