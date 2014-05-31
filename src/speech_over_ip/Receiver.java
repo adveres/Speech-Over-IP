@@ -16,7 +16,6 @@ import utilities.Utils;
 public class Receiver extends Thread {
 
     private Configuration config;
-    private AudioBytePlayer abPlayer = new AudioBytePlayer();
     private Random rand = new Random();
 
     boolean listening = true;
@@ -82,8 +81,17 @@ public class Receiver extends Thread {
             byte[] receivedData = null;
 
             while (listening) {
-                bufferSize = dis.readInt();
-                System.out.println("Read integer: " + bufferSize);
+
+                // :::NOTE:::
+                // dis.readInt() was spewing garbage all over the audio line. I
+                // stopped using it because it sounded so awful. I get much
+                // better sound from simply allocating the right sized array
+                // myself.
+                //
+                // bufferSize = dis.readInt();
+                //
+
+                bufferSize = Utils.latencyToBytes(config.getLatencyInMS());
                 if (bufferSize < 0 || bufferSize > Utils.latencyToBytes(Constants.CHUNK_OF_1000MS)) {
                     // Sometimes a junk integer gets read, and must be
                     // discarded.

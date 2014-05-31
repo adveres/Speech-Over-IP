@@ -99,66 +99,8 @@ public class Utils {
         return byte_array_to_ints(Utils.getFormat(), audioBytes);
     }
 
-    public static int[] calculateZeroCrossingsInChunks(int[] wholeArray, int chunkSize) {
-        int[] zeroCrossings = new int[wholeArray.length / chunkSize];
-
-        for (int x = 0; x < zeroCrossings.length; x++) {
-            int offset = x * chunkSize;
-            int[] chunk = Arrays.copyOfRange(wholeArray, offset, (offset + chunkSize));
-
-            int zeroCt = Utils.calculateZeroCrossings(chunk);
-            zeroCrossings[x] = zeroCt;
-        }
-
-        return zeroCrossings;
-    }
-
-    /**
-     * Calculate zero crossings in an integer array
-     * 
-     * @param data array of integers
-     * @return count of number of times we cross zero
-     */
-    public static int calculateZeroCrossings(int[] data) {
-        if (null == data || data.length == 0) {
-            System.err.println("Bad data given.");
-            return -1;
-        }
-
-        int zeroCrossings = 0;
-
-        // Find the first nonzero.
-        int last_nonzero = data[0];
-        int last_nonzero_index = 0;
-        for (int x = 0; x < data.length; x++) {
-            if (data[x] != 0) {
-                last_nonzero = data[x];
-                last_nonzero_index = x;
-                break;
-            }
-            if (x == data.length - 1) {
-                return 0;
-            }
-        }
-
-        // Find other nonzeros
-        for (int x = last_nonzero_index; x < data.length; x++) {
-
-            if (data[x] == 0) {
-                continue;
-            }
-            boolean prev_x_neg = last_nonzero < 0 ? true : false;
-            boolean curr_x_neg = data[x] < 0 ? true : false;
-            if (prev_x_neg != curr_x_neg) {
-                // System.out.println("last = (" + last_nonzero_index + ": " +
-                // last_nonzero
-                // + "). New=(" + x + ": " + data[x] + ")");
-                zeroCrossings++;
-                last_nonzero = data[x];
-                last_nonzero_index = x;
-            }
-        }
-        return zeroCrossings;
+    public static int energyOfChunk(byte[] data) {
+        return energyOfChunk(Utils.byte_array_to_ints(data));
     }
 
     public static int energyOfChunk(int[] data) {
@@ -204,20 +146,4 @@ public class Utils {
         }
         return ret;
     }
-
-    /**
-     * Runs the first 100ms algorithm on the first 800 bytes of raw sound
-     * 
-     * @param rawSoundBytes
-     * @return
-     */
-    public static SpeechDetectionConfig analyzeFirst100ms(byte[] rawSoundBytes) {
-        byte[] first_800_bytes = new byte[Constants.CHUNK_OF_100MS];
-        for (int x = 0; x < Constants.CHUNK_OF_100MS; x++) {
-            first_800_bytes[x] = rawSoundBytes[x];
-        }
-
-        return Algorithms.processFirst100ms(first_800_bytes);
-    }
-
 }

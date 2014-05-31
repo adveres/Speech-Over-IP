@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import utilities.Utils;
 import data.Configuration;
 
 /**
@@ -76,6 +77,12 @@ public class Sender {
      * @param audioBytes
      */
     public void sendBytes(byte[] audioBytes) {
+        if (config.isSpeechDetectionOn() && shouldDropAudioBasedOnSilence(audioBytes)) {
+            return;
+        } else {
+            System.out.println("Transmit audio | energy = " + Utils.energyOfChunk(audioBytes));
+        }
+
         if (this.config.isPacketTypeTCP()) {
             this.writeToTCP(audioBytes);
         } else if (this.config.isPacketTypeUDP()) {
@@ -117,5 +124,28 @@ public class Sender {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Given an array of audio bytes, is the energy over ITU and worth being
+     * sent?
+     * 
+     * @param audioBytes
+     * @return
+     */
+    private boolean shouldDropAudioBasedOnSilence(byte[] audioBytes) {
+        int energy = Utils.energyOfChunk(audioBytes);
+        if (energy <= config.getSpeechConfig().getITU()) {
+            return true;
+        }
+
+        // TCP was a real piece of work. It was making this reverberating
+        // clicking noise, so I needed to up the threshold a bit to stop it from
+        // constantly clicking forever.
+        if (config.isPacketTypeTCP() && energy <= config.getSpeechConfig().getITU() + 100) {
+            return true;
+        }
+
+        return false;
     }
 }

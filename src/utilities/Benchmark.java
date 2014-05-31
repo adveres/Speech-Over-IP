@@ -17,7 +17,7 @@ public class Benchmark {
     public Benchmark() {
         fileName = Constants.FILENAME_SOUND_RAW;
         rawSoundBytes = FileSaver.fileToBytes(fileName);
-        measurements = Utils.analyzeFirst100ms(rawSoundBytes);
+        measurements = new SpeechDetectionConfig(0, 0, 0);// Utils.analyzeFirst100ms(rawSoundBytes);
     }
 
     /**
@@ -34,7 +34,9 @@ public class Benchmark {
             if (i == 0) {
                 start = System.nanoTime();
             }
-            byte[] speechOnly = Algorithms.removeSilence(rawSoundBytes, measurements);
+            // TODO: Maybe delete this whole Benchmark class
+            // byte[] speechOnly = Algorithms.removeSilence(rawSoundBytes,
+            // measurements);
         }
         long time = System.nanoTime() - start;
         System.out.printf("Each silence removal run took an average of %,d ns%n", time / runs);

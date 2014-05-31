@@ -1,6 +1,7 @@
 package data;
 
 import utilities.Constants;
+import utilities.Utils;
 
 /**
  * Configuration options for the program. Contains really everything the
@@ -17,13 +18,14 @@ public class Configuration {
     private boolean speechDetectionOn = true;
     private String packetType = Constants.UDP;
 
-    private SpeechDetectionConfig speechConfig = new SpeechDetectionConfig(200.0, 400.0, 0.0);
+    private SpeechDetectionConfig speechConfig;
 
     /**
      * Default constructor is OK. Have defaults set above.
      */
     public Configuration() {
-
+        speechConfig = new SpeechDetectionConfig(200.0,
+                Utils.latencyToBytes(this.getLatencyInMS()), 0.0);
     }
 
     /**
@@ -44,6 +46,9 @@ public class Configuration {
         this.setLatencyInMS(latency);
         this.setSpeechDetectionOn(speechDetectionOn);
         this.setPacketType(packetType);
+
+        speechConfig = new SpeechDetectionConfig(200.0,
+                Utils.latencyToBytes(this.getLatencyInMS()), 0.0);
     }
 
     public String getHost() {
@@ -76,6 +81,7 @@ public class Configuration {
 
     public void setLatencyInMS(int latency) {
         this.latencyInMS = latency;
+        this.speechConfig.setITU(Utils.latencyToBytes(latency));
     }
 
     public boolean isSpeechDetectionOn() {
@@ -108,6 +114,19 @@ public class Configuration {
 
     public void setSpeechConfig(SpeechDetectionConfig speechConfig) {
         this.speechConfig = speechConfig;
+    }
+
+    public String toString() {
+        String s = "-----\nConfiguration: \n";
+        s += "  Host:\t\t\t" + host + "\n";
+        s += "  Port:\t\t\t" + port + "\n";
+        s += "  Loss %:\t\t" + lossPercent + "\n";
+        s += "  Latency in MS:\t" + latencyInMS + "\n";
+        s += "  Speech Detection:\t" + speechDetectionOn + "\n";
+        s += "  Packet Type:\t\t" + packetType + "\n";
+        s += "  Speech conf:\t\t" + speechConfig + "\n";
+        s += "-----\n";
+        return s;
     }
 
 }

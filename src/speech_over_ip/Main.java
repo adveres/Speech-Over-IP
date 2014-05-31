@@ -28,22 +28,18 @@ public class Main {
         System.out.println("]\n");
         parseArguments(args);
 
-        // config.setHost("192.168.1.10");
-        // config.setHost("192.168.1.11");
-        config.setHost("localhost");
-        // config.setHost("127.0.0.1");
-        config.setPort(6222);
-
+        System.out.println(config);
         new SpeakServer(config).listen();
         new SpeakClient(config);
     }
 
     private static void printUsage() {
-        String usage = "Usage: <loss %> <latency in ms> <tcp/udp> <detect speech true/false>";
+        String usage = "Usage: <host> <port> <loss %> <latency in ms> <tcp/udp> <detect speech true/false>";
         usage += " [ITL ITU]\n";
-        usage += "   ex:  Main 0 40 tcp true\n";
-        usage += "   ex:  Main 20 1000 udp false\n";
-        usage += "   ex:  Main 0 20 udp true 200 400\n";
+        usage += "   Note that ITL/ITU are optional.\n";
+        usage += "   ex:  Main localhost 8080 0 40 tcp true\n";
+        usage += "   ex:  Main 192.168.1.1 6222 20 1000 udp false\n";
+        usage += "   ex:  Main 8.8.8.8 8000 0 20 udp true 200 400\n";
 
         System.out.println(usage);
     }
@@ -54,20 +50,22 @@ public class Main {
      * @param args
      */
     private static void parseArguments(String[] args) {
-        if (args.length < 4) {
+        if (args.length < 6) {
             printUsage();
             System.exit(1);
         }
 
-        checkLossPct(Integer.parseInt(args[0]));
-        checkLatency(Integer.parseInt(args[1]));
-        checkPacketType(args[2]);
-        checkDetectSpeech(args[3]);
+        config.setHost(args[0]);
+        config.setPort(Integer.parseInt(args[1]));
+        checkLossPct(Integer.parseInt(args[2]));
+        checkLatency(Integer.parseInt(args[3]));
+        checkPacketType(args[4]);
+        checkDetectSpeech(args[5]);
 
-        if (args.length == 5) {
-            check_ITL(Integer.parseInt(args[4]));
-        } else if (args.length == 6) {
-            check_ITL_ITU(Integer.parseInt(args[4]), Integer.parseInt(args[5]));
+        if (args.length == 7) {
+            check_ITL(Integer.parseInt(args[6]));
+        } else if (args.length == 8) {
+            check_ITL_ITU(Integer.parseInt(args[6]), Integer.parseInt(args[7]));
         }
     }
 
