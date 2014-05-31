@@ -85,7 +85,8 @@ public class Receiver extends Thread {
                 bufferSize = dis.readInt();
                 System.out.println("Read integer: " + bufferSize);
                 if (bufferSize < 0 || bufferSize > Utils.latencyToBytes(Constants.CHUNK_OF_1000MS)) {
-                    //Sometimes a junk integer gets read, and must be discarded.
+                    // Sometimes a junk integer gets read, and must be
+                    // discarded.
                     continue;
                 }
                 receivedData = new byte[bufferSize];
@@ -100,7 +101,10 @@ public class Receiver extends Thread {
             socket.close();
             serverSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err
+                    .println("An exception occurred during listening on TCP. Did the other client quit?");
+            System.err.println(e);
+            System.exit(1);
         }
     }
 

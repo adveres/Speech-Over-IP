@@ -100,8 +100,7 @@ public class Sender {
                 dos.write(audioBytes);
             }
         } catch (IOException e) {
-            System.out.println("There was an error writing to the socket");
-            e.printStackTrace();
+            System.out.println("There was an error writing to the socket: " + e);
         }
     }
 
