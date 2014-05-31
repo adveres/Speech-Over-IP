@@ -16,7 +16,7 @@ public class Benchmark {
 
     public Benchmark() {
         fileName = Constants.FILENAME_SOUND_RAW;
-        rawSoundBytes = FileSaver.fileToBytes(fileName);
+        rawSoundBytes = new byte[100];//FileSaver.fileToBytes(fileName);
         measurements = new SpeechDetectionConfig(0, 0, 0);// Utils.analyzeFirst100ms(rawSoundBytes);
     }
 
@@ -46,15 +46,15 @@ public class Benchmark {
      * Pull in both sound.raw/speech.raw and compare file sizes.
      */
     public void measureFileSizes() {
-        byte[] rawSoundBytes = FileSaver.fileToBytes(Constants.FILENAME_SOUND_RAW);
-        byte[] rawSpeechBytes = FileSaver.fileToBytes(Constants.FILENAME_SPEECH_RAW);
-
-        System.out.print("Raw sound file is [" + rawSoundBytes.length + " bytes].  ");
-        System.out.println("Speech file is [" + rawSpeechBytes.length + " bytes].");
-
-        double reduction = 100 - (100 * ((double) rawSpeechBytes.length / (double) rawSoundBytes.length));
-        System.out.printf("Speech file is %.2f%s smaller than the original raw sound.\n",
-                reduction, "%");
+//        byte[] rawSoundBytes = FileSaver.fileToBytes(Constants.FILENAME_SOUND_RAW);
+//        byte[] rawSpeechBytes = FileSaver.fileToBytes(Constants.FILENAME_SPEECH_RAW);
+//
+//        System.out.print("Raw sound file is [" + rawSoundBytes.length + " bytes].  ");
+//        System.out.println("Speech file is [" + rawSpeechBytes.length + " bytes].");
+//
+//        double reduction = 100 - (100 * ((double) rawSpeechBytes.length / (double) rawSoundBytes.length));
+//        System.out.printf("Speech file is %.2f%s smaller than the original raw sound.\n",
+//                reduction, "%");
     }
 
     /**
