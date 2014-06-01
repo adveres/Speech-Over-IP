@@ -13,11 +13,14 @@ public class Receiver extends Thread {
 
     private Configuration config;
     private Random rand = new Random();
+    
+    AudioBytePlayer audioBytePlayer;
 
     boolean listening = true;
 
     public Receiver(Configuration config) throws IOException {
         this.config = config;
+        audioBytePlayer = new AudioBytePlayer();
     }
 
     public void run() {
@@ -144,8 +147,7 @@ public class Receiver extends Thread {
 
         // Otherwise play them as sound.
         try {
-            AudioBytePlayer ap = new AudioBytePlayer(audioData);
-            ap.start();
+            audioBytePlayer.playBytes(audioData);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
