@@ -1,4 +1,4 @@
-package utilities;
+package speech_over_ip;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,8 +6,6 @@ import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-
-import data.SpeechDetectionConfig;
 
 /**
  * Class with common methods for the package.

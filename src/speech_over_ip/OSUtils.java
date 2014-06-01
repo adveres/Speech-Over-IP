@@ -1,4 +1,4 @@
-package utilities;
+package speech_over_ip;
 
 public final class OSUtils {
 

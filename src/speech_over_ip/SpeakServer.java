@@ -2,8 +2,6 @@ package speech_over_ip;
 
 import java.io.IOException;
 
-import data.Configuration;
-
 /**
  * Controls the thread that listens on the socket and plays sound.
  * 

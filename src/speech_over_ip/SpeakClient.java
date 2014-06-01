@@ -7,9 +7,6 @@ import java.awt.event.*;
 
 import javax.sound.sampled.*;
 
-import data.Configuration;
-import utilities.Utils;
-
 /**
  * A client that controls the sending of voice over the network
  * 

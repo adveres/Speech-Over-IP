@@ -9,10 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-import data.Configuration;
-import utilities.Constants;
-import utilities.Utils;
-
 public class Receiver extends Thread {
 
     private Configuration config;

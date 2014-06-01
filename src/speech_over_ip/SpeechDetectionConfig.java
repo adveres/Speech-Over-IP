@@ -1,4 +1,4 @@
-package data;
+package speech_over_ip;
 
 /**
  * A class to hold the statistics we uncover from the first 100ms of audio

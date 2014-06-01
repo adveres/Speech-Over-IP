@@ -9,9 +9,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import utilities.Utils;
-import data.Configuration;
-
 /**
  * 
  * @author Adam Veres <adveres>

@@ -1,6 +1,7 @@
 package utilities;
 
-import data.SpeechDetectionConfig;
+import speech_over_ip.Constants;
+import speech_over_ip.SpeechDetectionConfig;
 
 /**
  * This program reads in the sound.raw file and runs certain benchmarks on its

@@ -1,7 +1,5 @@
-package data;
+package speech_over_ip;
 
-import utilities.Constants;
-import utilities.Utils;
 
 /**
  * Configuration options for the program. Contains really everything the
