@@ -28,6 +28,7 @@ Execute these commands inside the root project directory (where this README sits
     Compile:    javac -d bin src/speech_over_ip/*.java
 
     Run:        java -cp ./bin speech_over_ip.Main [PLUS PARAMETERS]
+    Run:        java -jar veres_proj2.jar [PLUS PARAMETERS]
 
 
 
