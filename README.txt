@@ -2,7 +2,7 @@ README
 This program was written in Eclipse and has an Eclipse project file structure.
 I am using Java 1.6 on this machine, although 1.7 should work fine.
 
-I programmed this on OSX, but used a Windows 7 machine as the other client. For UDP, everything works great from both ends. For TCP, something seems wrong from Windows->OSX, but OSX->Windows voice sounds okay (minus some clicking).  UDP is programmed with Java's DatagramSocket API, while TCP is Java's Socket API.
+I programmed this on OSX, but used a Windows 7 machine as the other client. For UDP, everything works great from both ends. For TCP, some clicking occurs and the receiver seems to have trouble playing sound nicely. It's understandable, but much less pleasant than UDP. I suspect real VOIP applications have a thread dedicated to playing sound buffers smoothely, but that's out of the scope of this program.
 
 •   All source is under /src/speech_over_ip/*.java
 •   Compiled *.class files go under /bin/speech_over_ip
